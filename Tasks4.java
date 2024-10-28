@@ -11,6 +11,12 @@ public class Tasks4 {
         System.out.println(Arrays.toString(bruteForce(5, 3)));
         System.out.println(encode(new int[]{0, 31, 28, 10, 29}, "MKIIT"));
         System.out.println(Arrays.toString(decode("MTUCI", "MKIIT")));
+        System.out.println(Arrays.toString(split("()()()")));
+        System.out.println(Arrays.toString(split("((()))")));
+        System.out.println(Arrays.toString(split("((()))(())()()(()())")));
+        System.out.println(Arrays.toString(split("((())())(()(()()))")));
+        System.out.println(shortHand("abbccc"));
+        System.out.println(shortHand("vvvvaajaaaaa"));
     }
 
     public static String nonRepeat(String str) {
@@ -70,6 +76,47 @@ public class Tasks4 {
         int[] total = new int[str1.length()];
         for (int i = 0; i < total.length; i++) {
             total[i] = str1.charAt(i) ^ str2.charAt(i);
+        }
+        return total;
+    }
+    
+    public static String[] split(String str) {
+        ArrayList<String> list = new ArrayList<>();
+        int countOpen = 0;
+        String temp = "";
+        for (char ch : str.toCharArray()) {
+            temp += ch;
+            if (ch == ')') {
+                countOpen--;
+                if (countOpen == 0) {
+                    list.add(temp);
+                    temp = "";
+                }
+            } else if (ch == '(') {
+                countOpen++;
+            }
+        }
+        String[] total = new String[list.size()];
+        list.toArray(total);
+        return total;
+    }
+
+    public static String shortHand(String str) {
+        String total = String.valueOf(str.charAt(0));
+        int count = 1;
+        for (int i = 1; i < str.length(); i++) {
+            if (str.charAt(i) == str.charAt(i - 1)) {
+                count++;
+            } else {
+                if (count > 1) {
+                    total += "*" + count;
+                }
+                total += str.charAt(i);
+                count = 1;
+            }
+        }
+        if (count > 1) {
+            total += "*" + count;
         }
         return total;
     }
