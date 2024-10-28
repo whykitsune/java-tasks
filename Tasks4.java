@@ -1,6 +1,8 @@
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 
 public class Tasks4 {
     public static void main(String[] args) {
@@ -17,6 +19,15 @@ public class Tasks4 {
         System.out.println(Arrays.toString(split("((())())(()(()()))")));
         System.out.println(shortHand("abbccc"));
         System.out.println(shortHand("vvvvaajaaaaa"));
+
+        System.out.println(uniqueSubstring("31312131"));
+        System.out.println(uniqueSubstring("1111111"));
+        System.out.println(uniqueSubstring("12223234333"));
+
+        System.out.println(numericOrder("t3o the5m 1One all6 r4ule ri2ng"));
+        System.out.println(numericOrder("re6sponsibility Wit1h gr5eat power3 4comes g2reat"));
+        System.out.println(fibString("CCCABDD"));
+        System.out.println(fibString("ABC"));
     }
 
     public static String nonRepeat(String str) {
@@ -119,5 +130,62 @@ public class Tasks4 {
             total += "*" + count;
         }
         return total;
+    }
+
+    // public static void roma(String[] args) {
+        
+    // }
+
+    public static String uniqueSubstring(String str) {
+        int[] array = new int[2];
+        for (int i = 0; i < str.length(); i++) {
+            int count = str.length() - str.replace(String.valueOf(str.charAt(i)), "").length();
+            if (count > array[1]) {
+                array[1] = count;
+                array[0] = i;
+            }
+        }
+        if (array[0] % 2 == 0) {
+            return "чет";
+        }
+        return "нечет";
+    }
+
+    public static String numericOrder(String str) {
+        String total = "";
+        String[] array = str.split(" ");
+        HashMap<Integer, String> table = new HashMap<>();
+        for (String temp : array) {
+            table.put(Integer.valueOf(temp.replaceAll("\\D", "")), temp.replaceAll("\\d", ""));
+        }
+        for (int i = 1; i < array.length; i++) {
+            if (i == array.length - 1) {
+                total += table.get(i);
+                break;
+            }
+            total += table.get(i) + " ";
+        }
+        return total;
+    }
+
+    public static boolean fibString(String str) {
+        ArrayList<Integer> list = new ArrayList<>();
+        while (!str.isEmpty()) {
+            list.add(str.length() - str.replace(String.valueOf(str.charAt(0)), "").length());
+            str = str.replace(String.valueOf(str.charAt(0)), "");
+        }
+        Collections.sort(list);
+        ArrayList<Integer> listFib = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            if (i <= 1) {
+                listFib.add(1);
+            } else {
+                listFib.add(listFib.getLast() + listFib.get(listFib.size() - 2));
+            }
+            if (!listFib.get(i).equals(list.get(i))) {
+                return false;
+            }
+        }
+        return true;
     }
 }
