@@ -19,11 +19,14 @@ public class Tasks4 {
         System.out.println(Arrays.toString(split("((())())(()(()()))")));
         System.out.println(shortHand("abbccc"));
         System.out.println(shortHand("vvvvaajaaaaa"));
-
+        System.out.println(convertToRome(8));
+        System.out.println(convertToRome(1234));
+        System.out.println(convertToRome(52));
         System.out.println(uniqueSubstring("31312131"));
         System.out.println(uniqueSubstring("1111111"));
         System.out.println(uniqueSubstring("12223234333"));
-
+        System.out.println(labirint(new int[][]{new int[]{1, 3, 1},new int[]{1, -1, 1}, new int[]{4, 2, 1}}));
+        System.out.println(labirint(new int[][] {new int[] {2, -7, 3}, new int[] {-4, -1, 8}, new int[] {4, 5, 9}}));
         System.out.println(numericOrder("t3o the5m 1One all6 r4ule ri2ng"));
         System.out.println(numericOrder("re6sponsibility Wit1h gr5eat power3 4comes g2reat"));
         System.out.println(fibString("CCCABDD"));
@@ -132,9 +135,19 @@ public class Tasks4 {
         return total;
     }
 
-    // public static void roma(String[] args) {
-        
-    // }
+    public static String convertToRome(int num) {
+        StringBuilder total = new StringBuilder();
+        String[] hundreds = new String[]{"", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"};
+        String[] tens = new String[]{"", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"};
+        String[] ones = new String[]{"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"};
+        if (num / 1000 != 0) {
+            total.append("M");
+        }
+        total.append(hundreds[(num % 1000) / 100]);
+        total.append(tens[(num % 100) / 10]);
+        total.append(ones[num % 10]);
+        return total.toString();
+    }
 
     public static String uniqueSubstring(String str) {
         int[] array = new int[2];
@@ -151,6 +164,76 @@ public class Tasks4 {
         return "нечет";
     }
 
+    public static ArrayList<String> labirint(int[][] nums) {
+        ArrayList<String> total = new ArrayList<>();
+        StringBuilder way = new StringBuilder();
+        int n = nums.length;
+        int[][] newNums = new int[n][n];
+        for (int i = n - 1; i >= 0; i--) {
+            for (int j = n - 1; j >= 0; j--) {
+                if (i == n - 1 && j == n - 1) {
+                    newNums[i][j] = nums[i][j];
+                } else if (nums[i][j] < 0){
+                } else if (j == n - 1) {
+                    if (newNums[i + 1][j] == 0) {
+                        newNums[i][j] = 0;
+                    }
+                    else {
+                        newNums[i][j] = nums[i][j] + newNums[i + 1][j];
+                    }
+                } else if (i == n - 1) {
+                    if (newNums[i][j + 1] == 0) {
+                        newNums[i][j] = 0;
+                    }
+                    else {
+                        newNums[i][j] = nums[i][j] + newNums[i][j + 1];
+                    }
+                } else if (newNums[i + 1][j] == 0 & newNums[i][j + 1] == 0) {
+                    newNums[i][j] = 0;
+                }
+                else if (newNums[i + 1][j] == 0 & newNums[i][j + 1] != 0) {
+                    newNums[i][j] = nums[i][j] + newNums[i][j + 1];
+                } else if (newNums[i][j + 1] == 0 & newNums[i + 1][j] != 0) {
+                    newNums[i][j] = nums[i][j] + newNums[i + 1][j];
+                } else {
+                    newNums[i][j] = nums[i][j] + Math.min(newNums[i + 1][j], newNums[i][j + 1]);
+                }
+            }
+        }
+        if (newNums[0][0] == 0){
+            total.add("Прохода нет");
+            return total;
+        }
+        int i = 0;
+        int j = 0;
+        for (int c = 0; c < n * 2 - 1; c++){
+            way.append(nums[i][j]).append("-");
+            if (i == n - 1) {
+                j+=1;
+            }
+            else if (j == n - 1) {
+                i+=1;
+            }
+            else if (newNums[i+1][j] == 0) {
+                j+=1;
+            }
+            else if (newNums[i][j+1] == 0) {
+                i+=1;
+            }
+            else if (newNums[i+1][j] > newNums[i][j+1]) {
+                j+=1;
+            }
+            else {
+                i += 1;
+            }
+        }
+        way.setLength(way.length()-1);
+        way.reverse();
+        total.add(way.toString());
+        total.add(newNums[0][0]+"");
+        return total;
+    }
+
     public static String numericOrder(String str) {
         String total = "";
         String[] array = str.split(" ");
@@ -158,8 +241,8 @@ public class Tasks4 {
         for (String temp : array) {
             table.put(Integer.valueOf(temp.replaceAll("\\D", "")), temp.replaceAll("\\d", ""));
         }
-        for (int i = 1; i < array.length; i++) {
-            if (i == array.length - 1) {
+        for (int i = 1; i <= array.length; i++) {
+            if (i == array.length) {
                 total += table.get(i);
                 break;
             }
